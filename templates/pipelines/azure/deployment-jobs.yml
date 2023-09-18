@@ -1,0 +1,46 @@
+parameters:
+  - name: azureSubscription
+    type: string
+    default: $(azureSubscription)
+  - name: artifactPath
+    type: string
+    default: "$(Pipeline.Workspace)/$(environment)_tfplan/$(Build.BuildId).tgz"
+  - name: artifactExtractPath
+    default: "$(Build.SourcesDirectory)"
+  - name: deploymentAzDoEnvironment
+    default: VMInfraDeployment-$(environment)
+  - name: repositoryEnvironment
+    default: $(environment)
+
+jobs:
+  - deployment: DeployStageApproval
+    displayName: Deployment Approval
+    environment: ${{ parameters.deploymentAzDoEnvironment }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: ExtractFiles@1
+              displayName: Extract Terraform Plan Artifact
+              inputs:
+                archiveFilePatterns: ${{ parameters.artifactPath }}
+                destinationFolder: ${{ parameters.artifactExtractPath }}
+                cleanDestinationFolder: true
+
+            - task: AzureCLI@2
+              name: apply_infra_plan
+              displayName: Apply Plan
+              inputs:
+                azureSubscription: ${{ parameters.azureSubscription }}
+                scriptType: bash
+                scriptLocation: inlineScript
+                addSpnToEnvironment: true
+                failOnStandardError: true
+                inlineScript: |
+                  # Terraform unable to use azure-cli without exporting the below variables
+                  export ARM_CLIENT_ID=$(azdo-spn-id)
+                  export ARM_CLIENT_SECRET=$(azdo-spn-secret)
+                  export ARM_TENANT_ID=$(tenant_id)
+
+                  echo "Validate plan"
+                  terraform -chdir=$(tfExtractArtifactRunPath) apply ${{ parameters.repositoryEnvironment }}.plan

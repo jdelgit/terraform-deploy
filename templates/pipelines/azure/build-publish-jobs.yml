@@ -1,0 +1,51 @@
+parameters:
+  - name: azureSubscription
+    type: string
+    default: $(azureSubscription)
+  - name: repositoryEnvironment
+    type: string
+    default: $(environment)
+  - name: tfBuildRepoPath
+    type: string
+    default: $(System.DefaultWorkingDirectory)/$(Build.Repository.Name)
+  - name: tfConfigRootPath
+    type: string
+    default: env/$(environment)/
+
+steps:
+  - task: AzureCLI@2
+    name: create_infra_plan
+    displayName: Create Plan from terrform config
+    inputs:
+      azureSubscription: ${{ parameters.azureSubscription }}
+      scriptType: bash
+      scriptLocation: inlineScript
+      addSpnToEnvironment: true
+      failOnStandardError: true
+      inlineScript: |
+        # Terraform unable to use azure-cli without exporting the below variables
+        export ARM_CLIENT_ID=$(azdo-spn-id)
+        export ARM_CLIENT_SECRET=$(azdo-spn-secret)
+        export ARM_TENANT_ID=$(tenant_id)
+
+        echo "Initialize terraform repository"
+        terraform -chdir=${{ parameters.tfConfigRootPath }} init
+
+        echo "Generate terraform output file"
+        terraform -chdir=${{ parameters.tfConfigRootPath }} plan -out ${{ parameters.repositoryEnvironment }}.plan
+        rm -rf ${{ parameters.tfBuildRepoPath }}/.git
+
+  - task: ArchiveFiles@2
+    displayName: Create Plan Artifact
+    inputs:
+      rootFolderOrFile: "${{ parameters.tfBuildRepoPath }}"
+      includeRootFolder: false
+      archiveType: "tar"
+      tarCompression: "gz"
+      archiveFile: "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).tgz"
+      replaceExistingArchive: true
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).tgz
+      artifact: ${{ parameters.repositoryEnvironment }}_tfplan

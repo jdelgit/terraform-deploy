@@ -1,0 +1,5 @@
+variables:
+  - name: environment
+    value: test
+  - name: azureSubscription
+    value: az-dev-spn

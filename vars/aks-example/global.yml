@@ -1,0 +1,36 @@
+variables:
+  # Azure AAD data
+  - group: azure-common-data
+  # Cluster related variables
+  - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
+      - template: prod.yml
+  - ${{ elseif eq(variables['Build.SourceBranch'], 'refs/heads/test') }}:
+      - template: test.yml
+  - ${{ else }}:
+      - template: dev.yml
+  - name: deploymentPrefix
+    value: akstemplate-$(environment)
+  - name: azureDeploymentEnvironment
+    value: VMInfraDeployment-$(environment)
+  - name: cluster_name
+    value: $(environment)-cluster
+  - name: cluster_dns_prefix
+    value: $(environment)-cluster
+  - name: runtime_group_name
+    value: rg-$(environment)-k8s-cluster
+  - name: resource_location
+    value: westeurope
+  # Terraform state
+  - name: tsStateResourceGroup
+    value: rg-devops
+  - name: tsStateStorageAccName
+    value: $(environment)terraformludicrous
+  - name: tsStateContainerName
+    value: tfstate
+  - name: tsStateKeyName
+    value: $(deploymentPrefix).tfstate
+  # Azure administration
+  - name: tagsProjectCode
+    value: terraform-template-testing
+  - name: tagsInvoiceCode
+    value: "00001"
