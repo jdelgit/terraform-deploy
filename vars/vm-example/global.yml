@@ -21,13 +21,21 @@ variables:
   - name: vm_os_distro
     value: Debian
   - name: vm_os_sku
-    value: "10"
+    value: "11"
   - name: vm_os_offer
-    value: "debian-10"
+    value: "debian-11"
   - name: vm_size
     value: "Standard_A2_v2"
   - name: vm_storage_type
     value: Standard_LRS
+  - name: enable_public_ip
+    value: true
+  - name: public_ip_allocation_method
+    value: "Dynamic"
+  - name: private_ip_allocation_method
+    value: "Static"
+  - name: public_ip_sku
+    value: "Basic"
   # Terraform state
   - name: tsStateResourceGroup
     value: rg-devops

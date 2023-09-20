@@ -5,6 +5,12 @@ trigger:
 pool: Default
 
 parameters:
+  - name: operation
+    type: string
+    default: create
+    values:
+      - create
+      - destroy
   - name: access_allowed_source_ips_cidr
     displayName: Comma separated (string) Ips allowed Source to access on server
     type: string
@@ -82,6 +88,8 @@ stages:
               repositoryEnvironment: $(environment)
               tfBuildRepoPath: $(tfBuildRepoPath)
               tfConfigRootPath: $(tfConfigRootPath)
+              operation: ${{ parameters.operation }}
+
   - stage: DeployStage
     condition: succeeded()
     jobs:
@@ -92,3 +100,4 @@ stages:
           artifactExtractPath: $(artifactExtractPath)
           deploymentAzDoEnvironment: $(azureDeploymentEnvironment)
           repositoryEnvironment: $(environment)
+          operation: ${{ parameters.operation }}

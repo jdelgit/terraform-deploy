@@ -2,6 +2,12 @@ parameters:
   - name: azureSubscription
     type: string
     default: $(azureSubscription)
+  - name: operation
+    type: string
+    default: create
+    values:
+      - create
+      - destroy
   - name: repositoryEnvironment
     type: string
     default: $(environment)
@@ -15,6 +21,7 @@ parameters:
 steps:
   - task: AzureCLI@2
     name: create_infra_plan
+    condition: ${{  eq( parameters.operation, 'create' ) }}
     displayName: Create Plan from terrform config
     inputs:
       azureSubscription: ${{ parameters.azureSubscription }}
@@ -35,8 +42,31 @@ steps:
         terraform -chdir=${{ parameters.tfConfigRootPath }} plan -out ${{ parameters.repositoryEnvironment }}.plan
         rm -rf ${{ parameters.tfBuildRepoPath }}/.git
 
+  - task: AzureCLI@2
+    name: destroy_infra_plan
+    condition: ${{  eq( parameters.operation, 'destroy' ) }}
+    displayName: Destroy Plan from terrform config
+    inputs:
+      azureSubscription: ${{ parameters.azureSubscription }}
+      scriptType: bash
+      scriptLocation: inlineScript
+      addSpnToEnvironment: true
+      failOnStandardError: true
+      inlineScript: |
+        # Terraform unable to use azure-cli without exporting the below variables
+        export ARM_CLIENT_ID=$(azdo-spn-id)
+        export ARM_CLIENT_SECRET=$(azdo-spn-secret)
+        export ARM_TENANT_ID=$(tenant_id)
+
+        echo "Initialize terraform repository"
+        terraform -chdir=${{ parameters.tfConfigRootPath }} init
+
+        echo "Generate terraform output file"
+        terraform -chdir=${{ parameters.tfConfigRootPath }} plan -destroy -out ${{ parameters.repositoryEnvironment }}.plan
+        rm -rf ${{ parameters.tfBuildRepoPath }}/.git
+
   - task: ArchiveFiles@2
-    displayName: Create Plan Artifact
+    displayName: Generate Plan Artifact
     inputs:
       rootFolderOrFile: "${{ parameters.tfBuildRepoPath }}"
       includeRootFolder: false
