@@ -36,7 +36,7 @@ jobs:
             - task: AzureCLI@2
               name: apply_infra_plan
               condition: ${{  eq( parameters.operation, 'create' ) }}
-              displayName: Apply Plan
+              displayName: Apply Infra Plan
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 scriptType: bash
@@ -49,13 +49,12 @@ jobs:
                   export ARM_CLIENT_SECRET=$(azdo-spn-secret)
                   export ARM_TENANT_ID=$(tenant_id)
 
-                  echo "Validate plan"
                   terraform -chdir=$(tfExtractArtifactRunPath) apply ${{ parameters.repositoryEnvironment }}.plan
 
             - task: AzureCLI@2
               name: destroy_infra_plan
               condition: ${{  eq( parameters.operation, 'destroy' ) }}
-              displayName: Destroy Plan from terrform config
+              displayName: Destroy Infra Plan
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 scriptType: bash

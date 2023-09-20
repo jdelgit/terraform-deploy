@@ -72,17 +72,17 @@ stages:
                 sed -i 's/__virtualMachineSize__/$(vm_size)/g'                              ${{ variables.tfConfigPath }}
                 sed -i 's/__storageAccountType__/$(vm_storage_type)/g'                      ${{ variables.tfConfigPath }}
                 sed -i 's/"__PublicIPEnabled__"/$(enable_public_ip)/g'                      ${{ variables.tfConfigPath }}
+                sed -i 's|__PublicIpSku__|$(public_ip_sku)|g'                               ${{ variables.tfConfigPath }}
                 sed -i 's/__PublicIPAllocationMethod__/$(public_ip_allocation_method)/g'    ${{ variables.tfConfigPath }}
                 sed -i 's/__PrivateIPAllocationMethod__/$(private_ip_allocation_method)/g'  ${{ variables.tfConfigPath }}
-                sed -i 's|__PublicIpSku__|$(public_ip_sku)|g'                 ${{ variables.tfConfigPath }}
 
                 sed -i 's/__adminUserName__/$(vm_admin_username)/g'             ${{ variables.tfConfigPath }}
                 sed -i 's|__adminSSHKey__|$(admin_ssh_key)|g'                   ${{ variables.tfConfigPath }}
 
-                sed -i 's|__allowSourceAccessPortRange__|${{ parameters.access_allowed_source_port_range }}|g'            ${{ variables.tfConfigPath }}
-                sed -i 's|"__allowSourceAccessIpsCidr__"|[${{ parameters.access_allowed_source_ips_cidr }}]|g'            ${{ variables.tfConfigPath }}
-                sed -i 's|"__allowDestinationAccessPorts__"|[${{ parameters.access_allowed_destination_ports }}]|g'       ${{ variables.tfConfigPath }}
-                sed -i 's|__allowDestinationAccessIpCidr__|${{ parameters.access_allowed_destination_ip_cidr }}|g'   ${{ variables.tfConfigPath }}
+                sed -i 's|__allowSourceAccessPortRange__|${{ parameters.access_allowed_source_port_range }}|g'        ${{ variables.tfConfigPath }}
+                sed -i 's|"__allowSourceAccessIpsCidr__"|[${{ parameters.access_allowed_source_ips_cidr }}]|g'        ${{ variables.tfConfigPath }}
+                sed -i 's|"__allowDestinationAccessPorts__"|[${{ parameters.access_allowed_destination_ports }}]|g'   ${{ variables.tfConfigPath }}
+                sed -i 's|__allowDestinationAccessIpCidr__|${{ parameters.access_allowed_destination_ip_cidr }}|g'    ${{ variables.tfConfigPath }}
 
                 # Terraform state
                 sed -i 's/__tfStateResourceGroup__/$(tsStateResourceGroup)/g'   ${{ variables.tfConfigPath }}
