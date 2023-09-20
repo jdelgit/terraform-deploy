@@ -38,7 +38,7 @@ resources:
     - repository: terraform-modules
       type: git
       name: terraform-modules
-      ref: feature/add-pubip
+      ref: main
 
 stages:
   - stage: BuildStage
