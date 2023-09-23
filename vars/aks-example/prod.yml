@@ -2,7 +2,7 @@ variables:
   - name: environment
     value: prod
   - name: azureSubscription
-    value: az-prod-spn
+    value: az-prod-env-spn
   - name: cluster_kubernetes_version
     value: 1.27.3
   - name: private_cluster_enabled

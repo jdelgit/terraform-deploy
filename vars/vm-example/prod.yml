@@ -2,4 +2,4 @@ variables:
   - name: environment
     value: prod
   - name: azureSubscription
-    value: az-prod-spn
+    value: az-prod-env-spn

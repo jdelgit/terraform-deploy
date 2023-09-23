@@ -11,7 +11,7 @@ variables:
   - name: azureDeploymentEnvironment
     value: VMInfraDeployment-$(environment)
   - name: vm_deployment_prefix
-    value: tf-$(environment)-vm
+    value: $(environment)-vm
   - name: runtime_group_name
     value: rg-$(vm_deployment_prefix)
   - name: resource_location
@@ -30,6 +30,8 @@ variables:
     value: Standard_LRS
   - name: enable_public_ip
     value: true
+  - name: create_ssh_key
+    value: false
   - name: public_ip_allocation_method
     value: "Dynamic"
   - name: private_ip_allocation_method

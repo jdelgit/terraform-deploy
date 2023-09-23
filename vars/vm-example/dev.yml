@@ -3,4 +3,4 @@ variables:
     value: dev
   - group: azure-dev-data
   - name: azureSubscription
-    value: az-dev-spn
+    value: az-dev-env-spn

@@ -3,7 +3,7 @@ variables:
     value: dev
   - group: azure-dev-data
   - name: azureSubscription
-    value: az-dev-spn
+    value: az-dev-env-spn
   - name: cluster_kubernetes_version
     value: 1.27.3
   - name: private_cluster_enabled

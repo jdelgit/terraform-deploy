@@ -14,7 +14,7 @@ parameters:
   - name: access_allowed_source_ips_cidr
     displayName: Comma separated (string) Ips allowed Source to access on server
     type: string
-    default: ""
+    default: '""'
   - name: access_allowed_source_port_range
     displayName: Port range (string) allowed Source to access on server
     type: string
@@ -38,7 +38,7 @@ resources:
     - repository: terraform-modules
       type: git
       name: terraform-modules
-      ref: main
+      ref: feature/vm-ssh-key
 
 stages:
   - stage: BuildStage
@@ -71,6 +71,7 @@ stages:
                 sed -i 's/__virtualMachineOSSku__/$(vm_os_sku)/g'                           ${{ variables.tfConfigPath }}
                 sed -i 's/__virtualMachineSize__/$(vm_size)/g'                              ${{ variables.tfConfigPath }}
                 sed -i 's/__storageAccountType__/$(vm_storage_type)/g'                      ${{ variables.tfConfigPath }}
+                sed -i 's/"__CreateSSHKey__"/$(create_ssh_key)/g'                           ${{ variables.tfConfigPath }}
                 sed -i 's/"__PublicIPEnabled__"/$(enable_public_ip)/g'                      ${{ variables.tfConfigPath }}
                 sed -i 's|__PublicIpSku__|$(public_ip_sku)|g'                               ${{ variables.tfConfigPath }}
                 sed -i 's/__PublicIPAllocationMethod__/$(public_ip_allocation_method)/g'    ${{ variables.tfConfigPath }}
@@ -79,6 +80,7 @@ stages:
                 sed -i 's/__adminUserName__/$(vm_admin_username)/g'             ${{ variables.tfConfigPath }}
                 sed -i 's|__adminSSHKey__|$(admin_ssh_key)|g'                   ${{ variables.tfConfigPath }}
 
+                sed -i 's|__sshKeyvaultAccessGroupId__|$(keyvault_access_group_id)|g'                                 ${{ variables.tfConfigPath }}
                 sed -i 's|__allowSourceAccessPortRange__|${{ parameters.access_allowed_source_port_range }}|g'        ${{ variables.tfConfigPath }}
                 sed -i 's|"__allowSourceAccessIpsCidr__"|[${{ parameters.access_allowed_source_ips_cidr }}]|g'        ${{ variables.tfConfigPath }}
                 sed -i 's|"__allowDestinationAccessPorts__"|[${{ parameters.access_allowed_destination_ports }}]|g'   ${{ variables.tfConfigPath }}
