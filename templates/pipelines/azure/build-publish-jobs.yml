@@ -40,7 +40,7 @@ steps:
         echo "Generate terraform output file"
         terraform -chdir=${{ parameters.tfConfigRootPath }} plan -var-file tfvars/${{ parameters.environment }}.tfvars -out ${{ parameters.environment }}.plan
         rm -rf ${{ parameters.tfBuildRepoPath }}/.git
-
+        rm -f ${{ parameters.tfBuildRepoPath }}/tfvars/${{ parameters.environment }}.tfvars
   - task: AzureCLI@2
     name: destroy_infra_plan
     condition: ${{  eq( parameters.operation, 'destroy' ) }}
