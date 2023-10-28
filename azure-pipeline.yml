@@ -49,7 +49,7 @@ stages:
               targetType: inline
               script: |
                 # tfvars substitutions
-                sed -i 's/__tenantId__/$(tenant_id)/g'                                                    ${{ variables.tfVarsFile }}
+                sed -i 's/__tenant_id__/$(tenant_id)/g'                                                    ${{ variables.tfVarsFile }}
                 sed -i 's/__subscription_id__/$(subscription_id)/g'                                       ${{ variables.tfVarsFile }}
                 sed -i 's/__location__/$(resource_location)/g'                                            ${{ variables.tfVarsFile }}
                 sed -i 's/__deployment_prefix__/$(deployment_prefix)/g'                                   ${{ variables.tfVarsFile }}
@@ -66,8 +66,8 @@ stages:
                 sed -i 's/__tfStateSubscriptionId__/$(subscription_id)/g'          ${{ variables.tfConfigBackendPath }}
 
                 # # Tags
-                # sed -i 's/__project_code__/$(tagsProjectCode)/g'    ${{ variables.tfConfigPath }}
-                # sed -i 's/__invoice_code__/$(tagsInvoiceCode)/g'    ${{ variables.tfConfigPath }}
+                # sed -i 's/__project_code__/$(tagsProjectCode)/g'    ${{ variables.tfVarsFile }}
+                # sed -i 's/__invoice_code__/$(tagsInvoiceCode)/g'    ${{ variables.tfVarsFile }}
 
           - template: templates/pipelines/azure/build-publish-jobs.yml
             parameters:
