@@ -29,7 +29,7 @@ resources:
     - repository: terraform-modules
       type: git
       name: terraform-modules
-      ref: bug/missing-vars
+      ref: main
 
 stages:
   - stage: BuildStage
