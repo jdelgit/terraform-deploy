@@ -2,7 +2,7 @@ tenant_id       = "__tenant_id__"
 subscription_id = "__subscription_id__"
 
 deployment_location = "__location__"
-deployment_prefix   = "__deployment_prefix"
+deployment_prefix   = "__deployment_prefix__"
 
 tags = {
   environment = "prod"
@@ -27,7 +27,7 @@ keyvault = {
   network_acls = {
     bypass         = "None"
     default_action = "Deny"
-    ip_rules       = [""]
+    ip_rules       = ["__allowed_public_cidr__"]
   }
 }
 

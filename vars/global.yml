@@ -4,6 +4,8 @@ parameters:
     default: example
 
 variables:
+  - name: deployment_prefix
+    value: azdo-ask
   # Environment specific files
   - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
       - template: prod.yml
@@ -40,7 +42,7 @@ variables:
   - name: tsStateContainerName
     value: tfstate
   - name: tsStateKeyName
-    value: $(vm_deployment_prefix)-template.tfstate
+    value: $(deployment_prefix)-template.tfstate
   ###################################
   # Library imports
   - group: azure-common-data

@@ -2,7 +2,7 @@ tenant_id       = "__tenant_id__"
 subscription_id = "__subscription_id__"
 
 deployment_location = "__location__"
-deployment_prefix   = "__deployment_prefix"
+deployment_prefix   = "__deployment_prefix__"
 
 tags = {
   environment = "dev"
@@ -27,7 +27,7 @@ keyvault = {
   network_acls = {
     bypass         = "None"
     default_action = "Deny"
-    ip_rules       = [""]
+    ip_rules       = ["__allowed_public_cidr__/32"]
   }
 }
 
@@ -112,7 +112,7 @@ cluster = {
     subnet_name          = "AzureAKSClusterSubnet"
     subnet_address_space = ["10.224.0.0/16"]
     service_endpoints    = ["Microsoft.KeyVault"]
-    allowed_access_ip    = "__allowed_public_cidr__"
+    allowed_access_ip    = "__allowed_public_cidr__/32"
     nsgrules = [
       {
         name                       = null
@@ -156,7 +156,7 @@ bastion = {
         protocol                   = "Tcp"
         source_port_range          = "*"
         destination_port_ranges    = ["22"]
-        source_address_prefix      = "__allowed_public_cidr__"
+        source_address_prefix      = "__allowed_public_cidr__/32"
         destination_address_prefix = "*"
       }
   ] }
