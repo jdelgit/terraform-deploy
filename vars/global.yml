@@ -6,6 +6,8 @@ parameters:
 variables:
   - name: deployment_prefix
     value: azdo-ask
+  - name: resource_location
+    value: westeurope
   # Environment specific files
   - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
       - template: prod.yml
