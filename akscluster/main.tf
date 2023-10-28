@@ -220,7 +220,7 @@ resource "null_resource" "provision" {
   count = length(module.vm_setup) > 0 ? 1 : 0
   connection {
     type        = "ssh"
-    user        = var.bastion.admin_ssh_data[0].username
+    user        = var.bastion.admin_username
     private_key = module.ssh_key[0].private_key
     host        = module.vm_setup[0].vm_public_ip
     port        = 22

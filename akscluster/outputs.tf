@@ -19,5 +19,5 @@ output "tenant_id" {
 }
 
 output "private_key_name" {
-  value = module.ssh_key.private_key_name
+  value = module.ssh_key[0].private_key_name
 }
