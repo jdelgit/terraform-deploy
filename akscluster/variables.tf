@@ -167,10 +167,10 @@ variable "bastion" {
     create_network          = bool
     pubip_allocation_method = string
     private_ip_allocation   = string
-    ssh_kp_keyvault = {
+    ssh_kp_keyvault = object({
       keyvault_name       = string
       resource_group_name = string
-    }
+    })
     network = object({
       subnet_name          = string
       subnet_address_space = list(string)
