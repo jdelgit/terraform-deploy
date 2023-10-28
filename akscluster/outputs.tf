@@ -7,7 +7,7 @@ output "groups" {
 }
 
 output "bastion_vm_ip" {
-  value =length(module.vm_setup) > 0 ? module.vm_setup[0].vm_public_ip : null
+  value = length(module.vm_setup) > 0 ? module.vm_setup[0].vm_public_ip : null
 }
 
 output "keyvault_managed_id_data" {
@@ -15,5 +15,5 @@ output "keyvault_managed_id_data" {
 }
 
 output "admin_ssh_private_key_name" {
-  value = module.ssh_key[0].private_key_name
+  value = length(module.ssh_key) > 0 ? module.ssh_key[0].private_key_name : null
 }
