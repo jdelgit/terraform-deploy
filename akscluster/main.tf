@@ -153,12 +153,12 @@ module "k8scluster" {
 
 # Get data from existing keyvault
 data "azurerm_key_vault" "ssh_keyvault" {
-  name = bastion.ssh_kp_keyvault.keyvault_name
-  resource_group_name = bastion.ssh_kp_keyvault.resource_group_name
+  name                = var.bastion.ssh_kp_keyvault.keyvault_name
+  resource_group_name = var.bastion.ssh_kp_keyvault.resource_group_name
 }
 
 data "azurerm_resource_group" "ssh_keyvault" {
-  name = bastion.ssh_kp_keyvault.resource_group_name
+  name = var.bastion.ssh_kp_keyvault.resource_group_name
 }
 
 module "ssh_key" {
