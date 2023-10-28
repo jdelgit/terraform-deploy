@@ -52,7 +52,7 @@ cluster_user_groups = {
     mail_enabled               = false
     dynamic_membership_enabled = false
     dynamic_membership_rule    = ""
-    owners                     = []
+    owners                     = ["__group_owner__"]
     members                    = []
   }
   operations = {
@@ -64,7 +64,7 @@ cluster_user_groups = {
     mail_enabled               = false
     dynamic_membership_enabled = false
     dynamic_membership_rule    = ""
-    owners                     = []
+    owners                     = ["__group_owner__"]
     members                    = []
   }
   developers = {
@@ -76,7 +76,7 @@ cluster_user_groups = {
     mail_enabled               = false
     dynamic_membership_enabled = false
     dynamic_membership_rule    = ""
-    owners                     = []
+    owners                     = ["__group_owner__"]
     members                    = []
   }
 }

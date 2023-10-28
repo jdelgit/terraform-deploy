@@ -26,7 +26,7 @@ locals {
     for group_name, group in var.cluster_user_groups :
     {
       name                       = group.name,
-      owners                     = group.owners
+      owners                     = setunion(group.owners,[azuread_client_config.current.object_id])
       members                    = group.members
       description                = group.description,
       security_enabled           = group.security_enabled,
@@ -45,6 +45,7 @@ locals {
     name = "aks-${local.deployment_name}"
   }
 }
+data "azuread_client_config" "current" {}
 
 
 resource "azurerm_resource_group" "deployment_rg" {
@@ -79,7 +80,6 @@ module "cluster_network" {
     }
   ]
 }
-data "azuread_client_config" "current" {}
 
 resource "azurerm_role_assignment" "k8s_groups_admin" {
   scope                = module.k8scluster.aks_cluster_id
