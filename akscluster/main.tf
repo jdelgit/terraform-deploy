@@ -227,12 +227,12 @@ resource "null_resource" "provision" {
   }
 
   provisioner "file" {
-    source      = "scripts/script.sh"
+    source      = "provision/scripts/script.sh"
     destination = "/tmp/script.sh"
   }
 
   provisioner "file" {
-    source      = "manifests"
+    source      = "provision/manifests"
     destination = "/tmp/"
   }
 
