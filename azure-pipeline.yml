@@ -53,7 +53,7 @@ stages:
                 sed -i 's/__subscription_id__/$(subscription_id)/g'                                       ${{ variables.tfVarsFile }}
                 sed -i 's/__location__/$(resource_location)/g'                                            ${{ variables.tfVarsFile }}
                 sed -i 's/__deployment_prefix__/$(deployment_prefix)/g'                                   ${{ variables.tfVarsFile }}
-                sed -i 's/__keyvault_access_aad_group_id__/null/g'                                        ${{ variables.tfVarsFile }}
+                sed -i 's/"__keyvault_access_aad_group_id__"/null/g'                                        ${{ variables.tfVarsFile }}
                 sed -i 's/__admin_username__/$(admin_username)/g'                                         ${{ variables.tfVarsFile }}
                 sed -i 's/__admin_sshkey_keyvault_name__/$(admin_ssh_keyvault_name)/g'                    ${{ variables.tfVarsFile }}
                 sed -i 's/__admin_sshkey_keyvault_group_name__/$(admin_ssh_keyvault_group_name)/g'        ${{ variables.tfVarsFile }}
