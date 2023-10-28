@@ -130,6 +130,7 @@ cluster = {
 }
 
 bastion = {
+  enabled        = true
   publisher      = "Debian"
   offer          = "debian-11"
   sku            = "11"
@@ -137,9 +138,8 @@ bastion = {
   storage_type   = "Premium_LRS"
   admin_username = "__admin_username__"
   ssh_kp_keyvault = {
-    keyvault_id       = "__admin_sshkey_keyvault_id__"
-    location          = "__admin_sshkey_keyvault_location__"
-    resource_group_id = "__admin_sshkey_keyvault_group_id__"
+    keyvault_name       = "__admin_sshkey_keyvault_name__"
+    resource_group_name = "__admin_sshkey_keyvault_group_name__"
   }
   create_public_ip        = false
   create_network          = false

@@ -49,15 +49,14 @@ stages:
               targetType: inline
               script: |
                 # tfvars substitutions
-                sed -i 's/__tenant_id__/$(tenant_id)/g'                                                    ${{ variables.tfVarsFile }}
+                sed -i 's/__tenant_id__/$(tenant_id)/g'                                                   ${{ variables.tfVarsFile }}
                 sed -i 's/__subscription_id__/$(subscription_id)/g'                                       ${{ variables.tfVarsFile }}
                 sed -i 's/__location__/$(resource_location)/g'                                            ${{ variables.tfVarsFile }}
                 sed -i 's/__deployment_prefix__/$(deployment_prefix)/g'                                   ${{ variables.tfVarsFile }}
                 sed -i 's/__keyvault_access_aad_group_id__/null/g'                                        ${{ variables.tfVarsFile }}
                 sed -i 's/__admin_username__/$(admin_username)/g'                                         ${{ variables.tfVarsFile }}
-                sed -i 's/__admin_sshkey_keyvault_id__/$(admin_ssh_keyvault_id)/g'                                         ${{ variables.tfVarsFile }}
-                sed -i 's/__admin_sshkey_keyvault_location__/$(admin_ssh_keyvault_location)/g'                                         ${{ variables.tfVarsFile }}
-                sed -i 's/__admin_sshkey_keyvault_group_id__/$(admin_ssh_keyvault_group_id)/g'                                         ${{ variables.tfVarsFile }}
+                sed -i 's/__admin_sshkey_keyvault_name__/$(admin_ssh_keyvault_name)/g'                    ${{ variables.tfVarsFile }}
+                sed -i 's/__admin_sshkey_keyvault_group_name__/$(admin_ssh_keyvault_group_name)/g'        ${{ variables.tfVarsFile }}
                 sed -i 's/__allowed_public_cidr__/${{ parameters.access_allowed_source_ips_cidr }}/g'     ${{ variables.tfVarsFile }}
 
                 # Terraform state
@@ -67,9 +66,9 @@ stages:
                 sed -i 's/__tfStateKey__/$(tsStateKeyName)/g'                      ${{ variables.tfConfigBackendPath }}
                 sed -i 's/__tfStateSubscriptionId__/$(subscription_id)/g'          ${{ variables.tfConfigBackendPath }}
 
-                # # Tags
-                # sed -i 's/__project_code__/$(tagsProjectCode)/g'    ${{ variables.tfVarsFile }}
-                # sed -i 's/__invoice_code__/$(tagsInvoiceCode)/g'    ${{ variables.tfVarsFile }}
+                # Tags
+                sed -i 's/__project_code__/$(tagsProjectCode)/g'    ${{ variables.tfVarsFile }}
+                sed -i 's/__invoice_code__/$(tagsInvoiceCode)/g'    ${{ variables.tfVarsFile }}
 
           - template: templates/pipelines/azure/build-publish-jobs.yml
             parameters:

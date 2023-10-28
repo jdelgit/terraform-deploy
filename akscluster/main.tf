@@ -151,20 +151,29 @@ module "k8scluster" {
 ##########################################################################
 # VM subnet in private-cluster vnet
 
+# Get data from existing keyvault
+data "azurerm_key_vault" "ssh_keyvault" {
+  name = bastion.ssh_kp_keyvault.keyvault_name
+  resource_group_name = bastion.ssh_kp_keyvault.resource_group_name
+}
+
+data "azurerm_resource_group" "ssh_keyvault" {
+  name = bastion.ssh_kp_keyvault.resource_group_name
+}
 
 module "ssh_key" {
-  count             = var.tags.environment == "prod" ? 1 : 0
+  count             = var.bastion.enabled == true ? 1 : 0
   source            = "./../../terraform-modules/azure/sshkey"
   ssh_key_name      = "${local.deployment_name}-kp"
-  keyvault_store_id = var.bastion.ssh_kp_keyvault.keyvault_id
-  location          = var.bastion.ssh_kp_keyvault.location
-  resource_group_id = var.bastion.ssh_kp_keyvault.resource_group_id
+  keyvault_store_id = azurerm_key_vault.ssh_keyvault.id
+  location          = azurerm_key_vault.ssh_keyvault.location
+  resource_group_id = azurerm_resource_group.ssh_keyvault.resource_group_id
 }
 
 # Only create VM in production environment
 # Virtualmachine accessed by bastion
 module "vm_setup" {
-  count               = var.tags.environment == "prod" ? 1 : 0
+  count               = var.bastion.enabled == true ? 1 : 0
   source              = "./../../terraform-modules/azure/virtualmachine"
   vm_name             = "${local.deployment_name}-bastion-vm"
   resource_group_name = azurerm_resource_group.deployment_rg.name
