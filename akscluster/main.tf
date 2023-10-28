@@ -189,7 +189,7 @@ module "vm_setup" {
   admin_ssh_data = [
     {
       username   = var.bastion.admin_username
-      public_key = module.ssh_key.public_key
+      public_key = module.ssh_key[0].public_key
     }
   ]
   vm_storage_account_type     = var.bastion.storage_type
@@ -221,7 +221,7 @@ resource "null_resource" "provision" {
   connection {
     type        = "ssh"
     user        = var.bastion.admin_ssh_data[0].username
-    private_key = module.ssh_key.private_key
+    private_key = module.ssh_key[0].private_key
     host        = module.vm_setup[0].vm_public_ip
     port        = 22
   }
