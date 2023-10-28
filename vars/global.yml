@@ -5,7 +5,7 @@ parameters:
 
 variables:
   - name: deployment_prefix
-    value: azdo-ask
+    value: azdo-aks
   - name: resource_location
     value: westeurope
   # Environment specific files
