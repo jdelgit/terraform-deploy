@@ -167,7 +167,7 @@ module "ssh_key" {
   ssh_key_name      = "${local.deployment_name}-kp"
   keyvault_store_id = data.azurerm_key_vault.ssh_keyvault.id
   location          = data.azurerm_key_vault.ssh_keyvault.location
-  resource_group_id = data.azurerm_resource_group.ssh_keyvault.resource_group_id
+  resource_group_id = data.azurerm_resource_group.ssh_keyvault.id
 }
 
 # Only create VM in production environment
