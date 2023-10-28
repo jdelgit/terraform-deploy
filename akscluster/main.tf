@@ -258,7 +258,7 @@ module "keyvault" {
   access_policies = [
     {
       name                          = var.keyvault.access_policies[0].name
-      access_policy_group_object_id = var.keyvault.access_policies[0].access_policy_group_object_id == "__keyvault_access_aad_group_id__" ? module.cluster_groups.group_ids[var.cluster_user_groups.admins.name] : var.keyvault.access_policies.access_policy_group_object_id
+      access_policy_group_object_id = var.keyvault.access_policies[0].access_policy_group_object_id == "__keyvault_access_aad_group_id__" ? module.cluster_groups.group_ids[var.cluster_user_groups.admins.name] : var.keyvault.access_policies[0].access_policy_group_object_id
       key_permissions               = var.keyvault.access_policies[0].key_permissions
       secret_permissions            = var.keyvault.access_policies[0].secret_permissions
       storage_permissions           = var.keyvault.access_policies[0].storage_permissions
