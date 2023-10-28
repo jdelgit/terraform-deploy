@@ -5,3 +5,7 @@
 *.tfstate
 *.backup
 *.hcl
+*local.conf
+*local.tfvars
+# manifests/
+*config

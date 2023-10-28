@@ -1,0 +1,88 @@
+# azure-pipelines
+trigger:
+  - none
+
+pool: Default
+
+parameters:
+  - name: operation
+    type: string
+    default: create
+    values:
+      - create
+      - destroy
+  - name: access_allowed_source_ips_cidr
+    displayName: Comma separated (string) Ips allowed Source to access on server
+    type: string
+    default: ""
+  - name: deploymentDir
+    displayName: Deployment Directory
+    type: string
+
+variables:
+  - template: vars/global.yml
+    parameters:
+      deploymentDir: ${{ parameters.deploymentDir }}
+
+resources:
+  repositories:
+    - repository: terraform-modules
+      type: git
+      name: terraform-modules
+      ref: bug/conditional-output
+
+stages:
+  - stage: BuildStage
+    jobs:
+      - job: BuildJob
+        steps:
+          - checkout: self
+            displayName: Checkout this repo
+
+          - checkout: terraform-modules
+            displayName: Checkout terraform-modules
+
+          - task: Bash@3
+            name: replace_tokens
+            displayName: Replace tokens in main.tf
+            inputs:
+              targetType: inline
+              script: |
+                # tfvars substitutions
+                sed -i 's/__tenantId__/$(tenant_id)/g'                                                    ${{ variables.tfVarsFile }}
+                sed -i 's/__subscription_id__/$(subscription_id)/g'                                       ${{ variables.tfVarsFile }}
+                sed -i 's/__location__/$(resource_location)/g'                                            ${{ variables.tfVarsFile }}
+                sed -i 's/__deployment_prefix/$(deployment_prefix)/g'                                     ${{ variables.tfVarsFile }}
+                sed -i 's/__keyvault_access_aad_group_id__/null/g'                                        ${{ variables.tfVarsFile }}
+                sed -i 's/__admin_username__/$(admin_username)/g'                                         ${{ variables.tfVarsFile }}
+                sed -i 's/__admin_ssh_key__/$(admin_ssh_key)/g'                                           ${{ variables.tfVarsFile }}
+                sed -i 's/__allowed_public_cidr__/${{ parameters.access_allowed_source_ips_cidr }}/g'     ${{ variables.tfVarsFile }}
+
+                # Terraform state
+                sed -i 's/__tfStateResourceGroup__/$(tsStateResourceGroup)/g'      ${{ variables.tfConfigBackendPath }}
+                sed -i 's/__tfStateStorageAccName__/$(tsStateStorageAccName)/g'    ${{ variables.tfConfigBackendPath }}
+                sed -i 's/__tfStateContainer__/$(tsStateContainerName)/g'          ${{ variables.tfConfigBackendPath }}
+                sed -i 's/__tfStateKey__/$(tsStateKeyName)/g'                      ${{ variables.tfConfigBackendPath }}
+                sed -i 's/__tfStateSubscriptionId__/$(subscription_id)/g'          ${{ variables.tfConfigBackendPath }}
+
+                # # Tags
+                # sed -i 's/__projectCode__/$(tagsProjectCode)/g'    ${{ variables.tfConfigPath }}
+                # sed -i 's/__invoiceCode__/$(tagsInvoiceCode)/g'    ${{ variables.tfConfigPath }}
+
+          - template: templates/pipelines/azure/build-publish-jobs.yml
+            parameters:
+              azureSubscription: $(azureSubscription)
+              environment: $(environment)
+              tfBuildRepoPath: $(tfBuildRepoPath)
+              tfConfigRootPath: $(tfConfigRootPath)
+              operation: ${{ parameters.operation }}
+  - stage: DeployStage
+    condition: succeeded()
+    jobs:
+      - template: templates/pipelines/azure/deployment-jobs.yml
+        parameters:
+          azureSubscription: $(azureSubscription)
+          artifactPath: $(artifactUploadPath)
+          artifactExtractPath: $(artifactExtractPath)
+          deploymentAzDoEnvironment: $(azureDeploymentEnvironment)
+          environment: $(environment)

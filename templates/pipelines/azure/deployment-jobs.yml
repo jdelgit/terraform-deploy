@@ -9,14 +9,8 @@ parameters:
     default: "$(Build.SourcesDirectory)"
   - name: deploymentAzDoEnvironment
     default: VMInfraDeployment-$(environment)
-  - name: repositoryEnvironment
+  - name: environment
     default: $(environment)
-  - name: operation
-    type: string
-    default: create
-    values:
-      - create
-      - destroy
 
 jobs:
   - deployment: DeployStageApproval
@@ -35,7 +29,6 @@ jobs:
 
             - task: AzureCLI@2
               name: apply_infra_plan
-              condition: ${{  eq( parameters.operation, 'create' ) }}
               displayName: Apply Infra Plan
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
@@ -49,22 +42,4 @@ jobs:
                   export ARM_CLIENT_SECRET=$(azdo-spn-secret)
                   export ARM_TENANT_ID=$(tenant_id)
 
-                  terraform -chdir=$(tfExtractArtifactRunPath) apply ${{ parameters.repositoryEnvironment }}.plan
-
-            - task: AzureCLI@2
-              name: destroy_infra_plan
-              condition: ${{  eq( parameters.operation, 'destroy' ) }}
-              displayName: Destroy Infra Plan
-              inputs:
-                azureSubscription: ${{ parameters.azureSubscription }}
-                scriptType: bash
-                scriptLocation: inlineScript
-                addSpnToEnvironment: true
-                failOnStandardError: true
-                inlineScript: |
-                  # Terraform unable to use azure-cli without exporting the below variables
-                  export ARM_CLIENT_ID=$(azdo-spn-id)
-                  export ARM_CLIENT_SECRET=$(azdo-spn-secret)
-                  export ARM_TENANT_ID=$(tenant_id)
-
-                  terraform -chdir=$(tfExtractArtifactRunPath) apply -destroy ${{ parameters.repositoryEnvironment }}.plan
+                  terraform -chdir=$(tfExtractArtifactRunPath) apply ${{ parameters.environment }}.plan

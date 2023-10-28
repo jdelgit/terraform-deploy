@@ -1,0 +1,65 @@
+parameters:
+  - name: deploymentDir
+    type: string
+    default: example
+
+variables:
+  # Environment specific files
+  - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
+      - template: prod.yml
+  - ${{ else }}:
+      - template: dev.yml
+  #############################################
+  # File paths for use in pipeline
+  - name: tfBuildRepoPath
+    value: $(Build.SourcesDirectory)/$(Build.Repository.Name)
+  - name: tfBuildSubpath
+    value: ${{ parameters.deploymentDir }}
+  - name: tfConfigRootPath
+    value: $(tfBuildRepoPath)/$(tfBuildSubpath)
+  - name: tfConfigBackendPath
+    value: $(tfConfigRootPath)/backend.conf
+  - name: tfVarsPath
+    value: $(tfConfigRootPath)/tfvars
+  - name: azureDeploymentEnvironment
+    value: VMInfraDeployment-$(environment)
+  - name: artifactUploadPath
+    value: "$(Pipeline.Workspace)/$(environment)_tfplan/$(Build.BuildId).tgz"
+  - name: artifactExtractPath
+    value: "$(Build.SourcesDirectory)"
+  - name: tfExtractArtifactRunPath
+    value: $(artifactExtractPath)/$(tfBuildSubpath)
+  - name: tfVarsFile
+    value: $(tfVarsPath)/$(environment).tfvars
+  ###########################################
+  # Terraform state storage
+  - name: tsStateResourceGroup
+    value: rg-devops
+  - name: tsStateStorageAccName
+    value: $(environment)terraformludicrous
+  - name: tsStateContainerName
+    value: tfstate
+  - name: tsStateKeyName
+    value: $(vm_deployment_prefix)-template.tfstate
+  ###################################
+  # Library imports
+  - group: azure-common-data
+  - group: azure-$(environment)-data
+  #################################
+  - name: deploymentPrefix
+    value: akstemplate-$(environment)
+  - name: azureDeploymentEnvironment
+    value: VMInfraDeployment-$(environment)
+  - name: cluster_name
+    value: $(environment)-cluster
+  - name: cluster_dns_prefix
+    value: $(environment)-cluster
+  - name: runtime_group_name
+    value: rg-$(environment)-k8s-cluster
+  - name: resource_location
+    value: westeurope
+  # Azure administration
+  - name: tagsProjectCode
+    value: terraform-template-testing
+  - name: tagsInvoiceCode
+    value: "00001"
