@@ -28,8 +28,6 @@ variables:
     value: $(tfConfigRootPath)/backend.conf
   - name: tfVarsPath
     value: $(tfConfigRootPath)/tfvars
-  - name: azureDeploymentEnvironment
-    value: VMInfraDeployment-$(environment)
   - name: artifactUploadPath
     value: "$(Pipeline.Workspace)/$(environment)_tfplan/$(Build.BuildId).tgz"
   - name: artifactExtractPath
