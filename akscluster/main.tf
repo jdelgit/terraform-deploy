@@ -26,7 +26,7 @@ locals {
     for group_name, group in var.cluster_user_groups :
     {
       name                       = group.name,
-      owners                     = setunion(group.owners,[azuread_client_config.current.object_id])
+      owners                     = setunion(group.owners,[data.azuread_client_config.current.object_id])
       members                    = group.members
       description                = group.description,
       security_enabled           = group.security_enabled,

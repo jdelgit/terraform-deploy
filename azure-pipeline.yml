@@ -57,6 +57,7 @@ stages:
                 sed -i 's/__admin_username__/$(admin_username)/g'                                         ${{ variables.tfVarsFile }}
                 sed -i 's/__admin_sshkey_keyvault_name__/$(admin_ssh_keyvault_name)/g'                    ${{ variables.tfVarsFile }}
                 sed -i 's/__admin_sshkey_keyvault_group_name__/$(admin_ssh_keyvault_group_name)/g'        ${{ variables.tfVarsFile }}
+                sed -i 's/__group_owner__/$(aad_groups_owner)/g'                                          ${{ variables.tfVarsFile }}
                 sed -i 's/__allowed_public_cidr__/${{ parameters.access_allowed_source_ips_cidr }}/g'     ${{ variables.tfVarsFile }}
 
                 # Terraform state
