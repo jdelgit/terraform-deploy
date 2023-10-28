@@ -51,7 +51,7 @@ variables:
   - name: deploymentPrefix
     value: akstemplate-$(environment)
   - name: azureDeploymentEnvironment
-    value: VMInfraDeployment-$(environment)
+    value: AKSInfraDeployment-$(environment)
   - name: cluster_name
     value: $(environment)-cluster
   - name: cluster_dns_prefix
