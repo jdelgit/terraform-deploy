@@ -44,7 +44,7 @@ variables:
   ###################################
   # Library imports
   - group: azure-common-data
-  - group: azure-$(environment)-data
+  - group: azure-${{ variables.environment }}-data
   #################################
   - name: deploymentPrefix
     value: akstemplate-$(environment)
