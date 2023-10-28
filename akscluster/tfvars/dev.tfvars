@@ -128,7 +128,7 @@ cluster = {
     ]
   }
 }
-__allowed_public_cidr__
+
 bastion = {
   publisher    = "Debian"
   offer        = "debian-11"
