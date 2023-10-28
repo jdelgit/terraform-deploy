@@ -151,23 +151,38 @@ module "k8scluster" {
 ##########################################################################
 # VM subnet in private-cluster vnet
 
+
+module "ssh_key" {
+  count             = var.tags.environment == "prod" ? 1 : 0
+  source            = "./../../terraform-modules/azure/sshkey"
+  ssh_key_name      = "${local.deployment_name}-kp"
+  keyvault_store_id = var.bastion.ssh_kp_keyvault.keyvault_id
+  location          = var.bastion.ssh_kp_keyvault.location
+  resource_group_id = var.bastion.ssh_kp_keyvault.resource_group_id
+}
+
 # Only create VM in production environment
 # Virtualmachine accessed by bastion
 module "vm_setup" {
-  count                       = var.tags.environment == "prod" ? 1 : 0
-  source                      = "./../../terraform-modules/azure/virtualmachine"
-  vm_name                     = "${local.deployment_name}-bastion-vm"
-  resource_group_name         = azurerm_resource_group.deployment_rg.name
-  location                    = azurerm_resource_group.deployment_rg.location
-  resource_group_id           = azurerm_resource_group.deployment_rg.id
-  vm_subnet_id                = module.cluster_network.subnet_ids[var.bastion.network.subnet_name]
-  create_public_ip            = var.bastion.create_public_ip
-  create_network              = var.bastion.create_network
-  vm_publisher                = var.bastion.publisher
-  vm_offer                    = var.bastion.offer
-  vm_sku                      = var.bastion.sku
-  vm_size                     = var.bastion.size
-  admin_ssh_data              = var.bastion.admin_ssh_data
+  count               = var.tags.environment == "prod" ? 1 : 0
+  source              = "./../../terraform-modules/azure/virtualmachine"
+  vm_name             = "${local.deployment_name}-bastion-vm"
+  resource_group_name = azurerm_resource_group.deployment_rg.name
+  location            = azurerm_resource_group.deployment_rg.location
+  resource_group_id   = azurerm_resource_group.deployment_rg.id
+  vm_subnet_id        = module.cluster_network.subnet_ids[var.bastion.network.subnet_name]
+  create_public_ip    = var.bastion.create_public_ip
+  create_network      = var.bastion.create_network
+  vm_publisher        = var.bastion.publisher
+  vm_offer            = var.bastion.offer
+  vm_sku              = var.bastion.sku
+  vm_size             = var.bastion.size
+  admin_ssh_data = [
+    {
+      username   = var.bastion.admin_username
+      public_key = module.ssh_key.public_key
+    }
+  ]
   vm_storage_account_type     = var.bastion.storage_type
   vm_version                  = "latest"
   privateip_allocation_method = var.bastion.private_ip_allocation
@@ -197,7 +212,7 @@ resource "null_resource" "provision" {
   connection {
     type        = "ssh"
     user        = var.bastion.admin_ssh_data[0].username
-    private_key = file("~/.ssh/id_rsa")
+    private_key = module.ssh_key.private_key
     host        = module.vm_setup[0].vm_public_ip
     port        = 22
   }

@@ -130,15 +130,17 @@ cluster = {
 }
 
 bastion = {
-  publisher    = "Debian"
-  offer        = "debian-11"
-  sku          = "11"
-  size         = "Standard_D2_v2"
-  storage_type = "Standard_LRS"
-  admin_ssh_data = [{
-    username   = "__admin_username__"
-    public_key = "__admin_ssh_key__"
-  }]
+  publisher      = "Debian"
+  offer          = "debian-11"
+  sku            = "11"
+  size           = "Standard_D2_v2"
+  storage_type   = "Standard_LRS"
+  admin_username = "__admin_username__"
+  ssh_kp_keyvault = {
+    keyvault_id       = "__admin_sshkey_keyvault_id__"
+    location          = "__admin_sshkey_keyvault_location__"
+    resource_group_id = "__admin_sshkey_keyvault_group_id__"
+  }
   create_public_ip        = true
   create_network          = false
   private_ip_allocation   = "Dynamic"

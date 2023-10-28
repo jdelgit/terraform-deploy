@@ -156,19 +156,21 @@ variable "cluster" {
 variable "bastion" {
   description = "Bastion related settings"
   type = object({
-    publisher    = string
-    offer        = string
-    sku          = string
-    size         = string
-    storage_type = string
-    admin_ssh_data = list(object({
-      username   = string
-      public_key = string
-    }))
+    publisher               = string
+    offer                   = string
+    sku                     = string
+    size                    = string
+    storage_type            = string
+    admin_username          = string
     create_public_ip        = bool
     create_network          = bool
     pubip_allocation_method = string
     private_ip_allocation   = string
+    ssh_kp_keyvault = {
+      keyvault_id       = string
+      location          = string
+      resource_group_id = string
+    }
     network = object({
       subnet_name          = string
       subnet_address_space = list(string)
@@ -187,19 +189,21 @@ variable "bastion" {
     })
   })
   default = {
-    publisher        = "Debian"
-    offer            = "debian-11"
-    sku              = "11"
-    size             = "Standard_D2_v2"
-    storage_type     = "Standard_LRS"
-    create_public_ip = true
-    create_network   = false
-    admin_ssh_data = [{
-      username   = ""
-      public_key = ""
-    }]
+    publisher               = "Debian"
+    offer                   = "debian-11"
+    sku                     = "11"
+    size                    = "Standard_D2_v2"
+    storage_type            = "Standard_LRS"
+    create_public_ip        = true
+    create_network          = false
+    admin_username          = "admin"
     private_ip_allocation   = "Dynamic"
     pubip_allocation_method = "Dynamic"
+    ssh_kp_keyvault = {
+      keyvault_id       = ""
+      location          = ""
+      resource_group_id = ""
+    }
     network = {
       subnet_name          = "AzureBastionVMSubnet"
       subnet_address_space = ["10.245.100.0/24"]

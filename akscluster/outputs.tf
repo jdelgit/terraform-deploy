@@ -17,3 +17,7 @@ output "keyvault_data" {
 output "tenant_id" {
   value = var.tenant_id
 }
+
+output "private_key_name" {
+  value = module.ssh_key.private_key_name
+}
