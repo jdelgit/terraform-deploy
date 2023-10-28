@@ -165,9 +165,9 @@ module "ssh_key" {
   count             = var.bastion.enabled == true ? 1 : 0
   source            = "./../../terraform-modules/azure/sshkey"
   ssh_key_name      = "${local.deployment_name}-kp"
-  keyvault_store_id = azurerm_key_vault.ssh_keyvault.id
-  location          = azurerm_key_vault.ssh_keyvault.location
-  resource_group_id = azurerm_resource_group.ssh_keyvault.resource_group_id
+  keyvault_store_id = data.azurerm_key_vault.ssh_keyvault.id
+  location          = data.azurerm_key_vault.ssh_keyvault.location
+  resource_group_id = data.azurerm_resource_group.ssh_keyvault.resource_group_id
 }
 
 # Only create VM in production environment
