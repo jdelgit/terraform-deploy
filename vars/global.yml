@@ -11,6 +11,9 @@ variables:
       - template: prod.yml
   - ${{ else }}:
       - template: dev.yml
+  # Deployment environment
+  - name: azureDeploymentEnvironment
+    value: AKSInfraDeployment-$(environment)
   #############################################
   # File paths for use in pipeline
   - name: tfBuildRepoPath
@@ -35,10 +38,6 @@ variables:
     value: $(tfVarsPath)/$(environment).tfvars
   ###########################################
   # Terraform state storage
-  - name: tsStateResourceGroup
-    value: rg-devops
-  - name: tsStateStorageAccName
-    value: $(environment)terraformludicrous
   - name: tsStateContainerName
     value: tfstate
   - name: tsStateKeyName
@@ -48,18 +47,6 @@ variables:
   - group: azure-common-data
   - group: azure-${{ variables.environment }}-data
   #################################
-  - name: deploymentPrefix
-    value: akstemplate-$(environment)
-  - name: azureDeploymentEnvironment
-    value: AKSInfraDeployment-$(environment)
-  - name: cluster_name
-    value: $(environment)-cluster
-  - name: cluster_dns_prefix
-    value: $(environment)-cluster
-  - name: runtime_group_name
-    value: rg-$(environment)-k8s-cluster
-  - name: resource_location
-    value: westeurope
   # Azure administration
   - name: tagsProjectCode
     value: terraform-template-testing
