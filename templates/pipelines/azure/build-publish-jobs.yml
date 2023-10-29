@@ -58,12 +58,12 @@ steps:
         export ARM_TENANT_ID=$(tenant_id)
 
         echo "Initialize terraform repository"
-        terraform -chdir=${{ parameters.tfConfigRootPath }} init
+        terraform -chdir=${{ parameters.tfConfigRootPath }} init --backend-config backend.conf
 
         echo "Generate terraform output file"
-        terraform -chdir=${{ parameters.tfConfigRootPath }} plan -var-file tfvars/${{ parameters.environment }}.tfvars -destroy -out ${{ parameters.environment }}.plan
+        terraform -chdir=${{ parameters.tfConfigRootPath }} plan -var-file tfvars/${{ parameters.environment }}.tfvars -out ${{ parameters.environment }}.plan -destroy
         rm -rf ${{ parameters.tfBuildRepoPath }}/.git
-
+        rm -f ${{ parameters.tfBuildRepoPath }}/tfvars/${{ parameters.environment }}.tfvars
   - task: ArchiveFiles@2
     displayName: Generate Plan Artifact
     inputs:
