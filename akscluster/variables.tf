@@ -66,39 +66,12 @@ variable "cluster_user_groups" {
   type = object({
     admins = object({
       name                       = string
-      description                = string
-      owners                     = list(string)
-      members                    = list(string)
-      security_enabled           = bool
-      mail_enabled               = bool
-      types                      = list(string)
-      assignable_to_role         = bool
-      dynamic_membership_enabled = bool
-      dynamic_membership_rule    = string
     })
     operations = object({
       name                       = string
-      description                = string
-      owners                     = list(string)
-      members                    = list(string)
-      security_enabled           = bool
-      mail_enabled               = bool
-      types                      = list(string)
-      assignable_to_role         = bool
-      dynamic_membership_enabled = bool
-      dynamic_membership_rule    = string
     })
     developers = object({
       name                       = string
-      description                = string
-      owners                     = list(string)
-      members                    = list(string)
-      security_enabled           = bool
-      mail_enabled               = bool
-      types                      = list(string)
-      assignable_to_role         = bool
-      dynamic_membership_enabled = bool
-      dynamic_membership_rule    = string
     })
   })
 }

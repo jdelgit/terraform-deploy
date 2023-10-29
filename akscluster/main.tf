@@ -22,25 +22,7 @@ provider "azurerm" {
 locals {
   deployment_name          = "${var.deployment_prefix}-${var.tags.environment}"
   stripped_deployment_name = replace("${local.deployment_name}", "-", "")
-  groups_data = flatten([
-    for group_name, group in var.cluster_user_groups :
-    {
-      name                       = group.name,
-      owners                     = setunion(group.owners,[data.azuread_client_config.current.object_id])
-      members                    = group.members
-      description                = group.description,
-      security_enabled           = group.security_enabled,
-      mail_enabled               = group.mail_enabled,
-      types                      = group.types,
-      assignable_to_role         = group.assignable_to_role,
-      dynamic_membership_enabled = group.dynamic_membership_enabled,
-      dynamic_membership_rule    = group.dynamic_membership_rule
-    } if((var.tags.environment == "prod" && (group_name == "admins" || group_name == "operations")) || (var.tags.environment == "dev"))
-  ])
-  group_ids = flatten([
-    for group in module.cluster_groups.group_ids :
-    group
-  ])
+  group_ids = zipmap(data.azuread_groups.group_data.display_names,data.azuread_groups.group_data.object_ids)
   cluster = {
     name = "aks-${local.deployment_name}"
   }
@@ -52,6 +34,10 @@ resource "azurerm_resource_group" "deployment_rg" {
   name     = "rg-${local.deployment_name}"
   location = var.deployment_location
   tags     = var.tags
+}
+
+data "azuread_groups" "group_data" {
+  display_name_prefix = "dev-cluster-"
 }
 
 ##########################################################################
@@ -84,31 +70,26 @@ module "cluster_network" {
 resource "azurerm_role_assignment" "k8s_groups_admin" {
   scope                = module.k8scluster.aks_cluster_id
   role_definition_name = "Azure Kubernetes Service Cluster Admin Role"
-  principal_id         = module.cluster_groups.group_ids[var.cluster_user_groups.admins.name]
+  principal_id         = local.group_ids[var.cluster_user_groups.admins.name]
 }
 
 resource "azurerm_role_assignment" "k8s_groups_admin_user" {
   scope                = module.k8scluster.aks_cluster_id
   role_definition_name = "Azure Kubernetes Service Cluster User Role"
-  principal_id         = module.cluster_groups.group_ids[var.cluster_user_groups.admins.name]
+  principal_id         = local.group_ids[var.cluster_user_groups.admins.name]
 }
 
 resource "azurerm_role_assignment" "k8s_groups_ops" {
   scope                = module.k8scluster.aks_cluster_id
   role_definition_name = "Azure Kubernetes Service Cluster User Role"
-  principal_id         = module.cluster_groups.group_ids[var.cluster_user_groups.operations.name]
+  principal_id         = local.group_ids[var.cluster_user_groups.operations.name]
 }
 
 resource "azurerm_role_assignment" "k8s_groups_devs" {
   count                = var.tags.environment == "prod" ? 0 : 1
   scope                = module.k8scluster.aks_cluster_id
   role_definition_name = "Azure Kubernetes Service Cluster User Role"
-  principal_id         = module.cluster_groups.group_ids[var.cluster_user_groups.developers.name]
-}
-
-module "cluster_groups" {
-  source      = "../../terraform-modules/azure/aad_group"
-  groups_data = local.groups_data
+  principal_id         = local.group_ids[var.cluster_user_groups.developers.name]
 }
 
 ##########################################################################
@@ -120,7 +101,7 @@ module "k8scluster" {
   vnet_integration_enabled                    = var.cluster.vnet_integration_enabled
   cluster_name                                = local.cluster.name
   cluster_dns_prefix                          = "${local.deployment_name}-dns"
-  cluster_admin_group_ids                     = [module.cluster_groups.group_ids[var.cluster_user_groups.admins.name]]
+  cluster_admin_group_ids                     = [local.group_ids[var.cluster_user_groups.admins.name]]
   enable_auto_scaling                         = var.cluster.autoscale
   default_node_size                           = var.cluster.cluster_node_size
   default_node_os_disk_size_gb                = var.cluster.cluster_node_os_disk_size_gb
@@ -258,7 +239,7 @@ module "keyvault" {
   access_policies = [
     {
       name                          = var.keyvault.access_policies[0].name
-      access_policy_group_object_id = var.keyvault.access_policies[0].access_policy_group_object_id == null  || var.keyvault.access_policies[0].access_policy_group_object_id == "null"  ? module.cluster_groups.group_ids[var.cluster_user_groups.admins.name] : var.keyvault.access_policies[0].access_policy_group_object_id
+      access_policy_group_object_id = var.keyvault.access_policies[0].access_policy_group_object_id == null  || var.keyvault.access_policies[0].access_policy_group_object_id == "null"  ? local.group_ids[var.cluster_user_groups.admins.name] : var.keyvault.access_policies[0].access_policy_group_object_id
       key_permissions               = var.keyvault.access_policies[0].key_permissions
       secret_permissions            = var.keyvault.access_policies[0].secret_permissions
       storage_permissions           = var.keyvault.access_policies[0].storage_permissions

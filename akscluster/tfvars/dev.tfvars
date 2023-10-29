@@ -45,39 +45,12 @@ acr = {
 cluster_user_groups = {
   admins = {
     name                       = "dev-cluster-admins"
-    description                = "Admins with full access to cluster, present in Dev & Prod"
-    security_enabled           = true
-    types                      = null
-    assignable_to_role         = true
-    mail_enabled               = false
-    dynamic_membership_enabled = false
-    dynamic_membership_rule    = ""
-    owners                     = ["__group_owner__"]
-    members                    = []
   }
   operations = {
     name                       = "dev-cluster-ops"
-    description                = "Operation can execute basic debug commands, present in Dev & Prod"
-    security_enabled           = true
-    types                      = null
-    assignable_to_role         = true
-    mail_enabled               = false
-    dynamic_membership_enabled = false
-    dynamic_membership_rule    = ""
-    owners                     = ["__group_owner__"]
-    members                    = []
   }
   developers = {
     name                       = "dev-cluster-devs"
-    description                = "Allow for deploying apps, not present in Prod"
-    security_enabled           = true
-    types                      = null
-    assignable_to_role         = true
-    mail_enabled               = false
-    dynamic_membership_enabled = false
-    dynamic_membership_rule    = ""
-    owners                     = ["__group_owner__"]
-    members                    = []
   }
 }
 
