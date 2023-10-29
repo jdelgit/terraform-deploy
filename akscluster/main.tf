@@ -229,7 +229,7 @@ resource "null_resource" "provision" {
 module "keyvault" {
   for_each                      = { for namespace in var.keyvault.namespaces : namespace => namespace }
   source                        = "./../../terraform-modules/azure/keyvault"
-  keyvault_name                 = "${local.deployment_name}-${each.value}-aks"
+  keyvault_name                 = "${local.deployment_name}-${each.value}-kv"
   keyvault_sku                  = "standard"
   location                      = azurerm_resource_group.deployment_rg.location
   resource_group_name           = azurerm_resource_group.deployment_rg.name
