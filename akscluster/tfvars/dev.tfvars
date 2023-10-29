@@ -82,7 +82,7 @@ cluster_user_groups = {
 }
 
 cluster = {
-  private                                     = false
+  private                                     = true
   keyvault_secrets_management                 = true
   kubernetes_version                          = "1.27.3"
   sku_tier                                    = "Free"
