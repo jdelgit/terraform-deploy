@@ -37,7 +37,7 @@ resource "azurerm_resource_group" "deployment_rg" {
 }
 
 data "azuread_groups" "group_data" {
-  display_name_prefix = "dev-cluster-"
+  display_name_prefix = var.cluster_user_groups.name_prefix
 }
 
 ##########################################################################

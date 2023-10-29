@@ -43,6 +43,7 @@ acr = {
 }
 
 cluster_user_groups = {
+  name_prefix = "dev-cluster-"
   admins = {
     name                       = "dev-cluster-admins"
   }

@@ -64,6 +64,7 @@ variable "virtualnetwork" {
 variable "cluster_user_groups" {
   description = "Data for the various groups used in the Infra and Cluster"
   type = object({
+    name_prefix = string
     admins = object({
       name                       = string
     })

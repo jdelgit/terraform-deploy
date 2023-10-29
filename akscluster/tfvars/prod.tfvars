@@ -43,6 +43,7 @@ acr = {
 }
 
 cluster_user_groups = {
+  name_prefix = "prod-cluster-"
   admins = {
     name                       = "prod-cluster-admins"
   }
