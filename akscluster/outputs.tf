@@ -2,10 +2,6 @@ output "tenant_id" {
   value = var.tenant_id
 }
 
-output "groups" {
-  value = module.cluster_groups.group_ids
-}
-
 output "bastion_vm_ip" {
   value = length(module.vm_setup) > 0 ? module.vm_setup[0].vm_public_ip : null
 }
