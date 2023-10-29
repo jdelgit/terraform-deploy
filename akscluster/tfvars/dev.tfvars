@@ -130,7 +130,7 @@ cluster = {
 }
 
 bastion = {
-  enabled        = false
+  enabled        = true
   publisher      = "Debian"
   offer          = "debian-11"
   sku            = "11"
